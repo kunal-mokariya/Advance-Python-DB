@@ -172,13 +172,17 @@ def display():
     data.heading("id",text="id")
     data.heading("name",text="name")
     data.heading("price",text="price")
-    a = {};
+   
+    a = {}
     for row in rows:
-        id,name,price,cate = row;
-        if cate not in a:
-            p = data.insert("",END,text=cate,values=("","","",""));
-            a[cate]=p;
-        data.insert(a[cate],END,text="",values=(id,name,price))
+        id, name, price, cate = row
+        key = a.get(cate)  # agar nahi hoy to None
+        if (key==None):
+            p = data.insert("", "end", text=cate, values=(""))
+            a[cate] = p
+        data.insert(a[cate], "end", text="", values=(id, name, price))
+    print(a["asd"])
+
     data.pack(expand=True,fill="both", padx=10, pady=10)
     cursor.close();
     cnn.close()
