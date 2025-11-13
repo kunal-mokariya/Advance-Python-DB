@@ -46,6 +46,7 @@ def search_data(event):
     for widget in gp3.winfo_children():
         widget.destroy()
     search = se.get();
+    print("Search")
     if(search==""):
         display();
     else:
@@ -172,21 +173,20 @@ def display():
     data.heading("id",text="id")
     data.heading("name",text="name")
     data.heading("price",text="price")
-   
     a = {}
     for row in rows:
         id, name, price, cate = row
-        key = a.get(cate)  # agar nahi hoy to None
+        key = a.get(cate)
         if (key==None):
             p = data.insert("", "end", text=cate, values=(""))
             a[cate] = p
         data.insert(a[cate], "end", text="", values=(id, name, price))
     print(a["asd"])
-
     data.pack(expand=True,fill="both", padx=10, pady=10)
     cursor.close();
     cnn.close()
-display();
+
+
 
 lbl1 = Label(gp1,text="Name");
 lbl1.place(x=30,y=50);
