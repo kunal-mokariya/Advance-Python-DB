@@ -181,7 +181,7 @@ def display():
             p = data.insert("", "end", text=cate, values=(""))
             a[cate] = p
         data.insert(a[cate], "end", text="", values=(id, name, price))
-    print(a["asd"])
+        print(a,id,name,price,cate)
     data.pack(expand=True,fill="both", padx=10, pady=10)
     cursor.close();
     cnn.close()
