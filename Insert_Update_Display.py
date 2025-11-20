@@ -19,6 +19,8 @@ init();
 nm = StringVar();
 pr = IntVar();
 def insert_data():
+    d = data.item(data.focus());
+    print(d["values"])
     name = nm.get();
     price = pr.get()
     a=len(name);
@@ -34,12 +36,11 @@ def insert_data():
         cursor.close();
         cnn.close();
         messagebox.showinfo("Information","Data Inserted !")
-        for widget in gp3.winfo_children():
-            widget.destroy()
-        display();
+        data.insert("",END,values=(cursor.lastrowid,name,price));
     else:
         messagebox.showinfo("Information","Please Fill Data")
 se = StringVar()
+
 def search_data(event):
     for widget in gp3.winfo_children():
         widget.destroy()
@@ -65,72 +66,64 @@ def search_data(event):
 
 def delete_data():
     global data;
-    d = data.selection();
-    a = len(d)
-    if(a>0):
+    d = data.item(data.focus());
+    if(d["values"]!=""):
         msg = messagebox.askyesno("Qustion","Do You Want To Delete This Record ?")
         if(msg):
-            v = data.item(d[0])["values"];
-            v1 = v[0];
+            v = d["values"][0]
             cnn = sq.connect("MY.db");
             cursor = cnn.cursor();
-            cursor.execute("delete from My_Record where id=(?)",(v1,));
+            cursor.execute("delete from My_Record where id=(?)",(v,));
             cnn.commit();
             cursor.close()
             cnn.close();
+            data.delete(data.focus());
             messagebox.showinfo("Information","Record Deleted !");
     else:
         messagebox.showinfo("Information","Select Record !");
-    for widget in gp3.winfo_children():
-        widget.destroy()
-    display();
+
 
 def update_data():
-    root2=Toplevel(root);
-    root2.title("Update Frame");
-
-    nm = StringVar();
-    pr = IntVar();
-    gp4 = LabelFrame(root2,text="Update Data",width="200",height="300")
-    gp4.pack(padx=350,pady=10,fill="both",expand=False);
-
-    lbl4 = Label(gp4,text="Name");
-    lbl4.place(x=20,y=30);
-    txt4 = Entry(gp4,textvariable=nm);
-    txt4.place(x=80,y=30);
-    
     global data;
-    d = data.selection();
-    a = len(d)
-    if (a>0):
-        v = data.item(d[0])["values"];
-        txt4.insert(0,v[1])
+    d = data.item(data.focus());
+    if (d["values"]!=""):
+         root2=Toplevel(root);
+         root2.title("Update Frame");
 
-        lbl5 = Label(gp4,text="Price");
-        lbl5.place(x=20,y=90);
-        txt5 = Entry(gp4,textvariable=pr);
-        txt5.place(x=80,y=90);
-        txt5.insert(0,v[2])
+         nm = StringVar();
+         pr = IntVar();
+         gp4 = LabelFrame(root2,text="Update Data",width="200",height="300")
+         gp4.pack(padx=350,pady=10,fill="both",expand=False);
 
-        def up_data():
+         lbl4 = Label(gp4,text="Name");
+         lbl4.place(x=20,y=30);
+         txt4 = Entry(gp4,textvariable=nm);
+         txt4.place(x=80,y=30);
+         txt4.insert(0,d["values"][1])
+
+         lbl5 = Label(gp4,text="Price");
+         lbl5.place(x=20,y=90);
+         txt5 = Entry(gp4,textvariable=pr);
+         txt5.place(x=80,y=90);
+         txt5.insert(0,d["values"][2])
+
+         def up_data():
             name = nm.get();
             price = pr.get();
             cnn = sq.connect("MY.db");
             cursor = cnn.cursor();
-            cursor.execute("update My_Record set name=(?),price=(?) where id=(?)",(name,price,v[0]));
+            cursor.execute("update My_Record set name=(?),price=(?) where id=(?)",(name,price,d["values"][0]));
             cnn.commit();
             messagebox.showinfo("Information","Record Updated !")
             cursor.close();
             cnn.close();
-            for widget in gp3.winfo_children():
-                widget.destroy()
-            display();
+            data.item(data.focus(),values=(d["values"][0],name,price));
 
-        btn5 = Button(gp4,text="Update & Save",command=up_data);
-        btn5.place(x=80,y=130)
+         btn5 = Button(gp4,text="Update & Save",command=up_data);
+         btn5.place(x=80,y=130)
 
-        root2.geometry("1000x400+100+200");
-        root2.mainloop();
+         root2.geometry("1000x400+100+200");
+         root2.mainloop();
     else:
         messagebox.showinfo("Information","Select Data !")
 
