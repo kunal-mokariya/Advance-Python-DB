@@ -1,7 +1,7 @@
 from tkinter import *;
 from tkinter import messagebox;
 from tkinter import ttk;
-import sqlite3 as sq;
+import mysql.connector as sq;
 import csv 
 
 root = Tk();
@@ -9,9 +9,9 @@ root.title("SC");
 data = "";
 
 def init():
-    cnn = sq.connect("MY.db");
+    cnn = sq.connect(host="localhost",user="root",password="",database="somnath");
     cursor = cnn.cursor();
-    cursor.execute("create table if not exists My_Record(id integer primary key autoincrement,name text,price integer)")
+    cursor.execute("create table if not exists My_Record(id int primary key auto_increment,name varchar(20),price int)")
     cursor.close();
     cnn.close();
 init();
@@ -24,9 +24,9 @@ def insert_data():
     a=len(name);
     b = len(txt2.get());
     if(a>0 and b>0):
-        cnn = sq.connect("MY.db");
+        cnn = sq.connect(host="localhost",user="root",password="",database="somnath");
         cursor = cnn.cursor();
-        cursor.execute("insert into My_Record(name,price)values(?,?)",(name,price));
+        cursor.execute("insert into My_Record(name,price)values(%s,%s)",(name,price));
         txt1.delete(0,END);
         txt2.delete(0,END);
         txt1.focus();
@@ -47,9 +47,9 @@ def search_data(event):
     if(search==""):
         display();
     else:
-        cnn = sq.connect("MY.db");
+        cnn = sq.connect(host="localhost",user="root",password="",database="somnath");
         cursor = cnn.cursor();
-        cursor.execute("SELECT * FROM My_Record WHERE id LIKE ? or name LIKE ? or price LIKE ?",(f"%{search}%", f"%{search}%", f"%{search}%"));
+        cursor.execute("SELECT * FROM My_Record WHERE id LIKE %s or name LIKE %s or price LIKE %s",(f"%{search}%", f"%{search}%", f"%{search}%"));
         rows = cursor.fetchall();
         global data;
         data = ttk.Treeview(gp3,columns=["id","name","price"], show="headings")
@@ -70,9 +70,9 @@ def delete_data():
         msg = messagebox.askyesno("Qustion","Do You Want To Delete This Record ?")
         if(msg):
             v = d["values"][0]
-            cnn = sq.connect("MY.db");
+            cnn = sq.connect(host="localhost",user="root",password="",database="somnath");
             cursor = cnn.cursor();
-            cursor.execute("delete from My_Record where id=(?)",(v,));
+            cursor.execute("delete from My_Record where id=(%s)",(v,));
             cnn.commit();
             cursor.close()
             cnn.close();
@@ -109,9 +109,9 @@ def update_data():
          def up_data():
             name = nm.get();
             price = pr.get();
-            cnn = sq.connect("MY.db");
+            cnn = sq.connect(host="localhost",user="root",password="",database="somnath");
             cursor = cnn.cursor();
-            cursor.execute("update My_Record set name=(?),price=(?) where id=(?)",(name,price,d["values"][0]));
+            cursor.execute("update My_Record set name=(%s),price=(%s) where id=(%s)",(name,price,d["values"][0]));
             cnn.commit();
             messagebox.showinfo("Information","Record Updated !")
             cursor.close();
@@ -127,7 +127,7 @@ def update_data():
         messagebox.showinfo("Information","Select Data !")
 
 def export_data():
-    cnn = sq.connect("MY.db");
+    cnn = sq.connect(host="localhost",user="root",password="",database="somnath");
     cursor = cnn.cursor();
     cursor.execute("select * from My_Record"); 
     data = cursor.fetchall();
@@ -147,7 +147,7 @@ gp3 = LabelFrame(root,text="All Records",width="200",height="500")
 gp3.pack(padx=350,pady=10,fill="both",expand=False);
 
 def display():
-    cnn = sq.connect("MY.db");
+    cnn = sq.connect(host="localhost",user="root",password="",database="somnath");
     cursor = cnn.cursor();
     cursor.execute("select * from My_Record"); 
     rows = cursor.fetchall();
