@@ -17,7 +17,7 @@ def save_data():
     with open("my.txt","a",newline="") as f:
         cnn = sq.connect(host="localhost",user="root",password="",database="somnath");
         cursor = cnn.cursor();
-        cursor.execute("insert into My(name,city)",(txt1.get(),txt2.get()));
+        cursor.execute("insert into My(name,city)values(%s,%s)",(txt1.get(),txt2.get()));
         cnn.commit();
         cursor.close();
         cnn.close();
