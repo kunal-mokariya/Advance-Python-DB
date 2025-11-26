@@ -1,7 +1,7 @@
 from tkinter import *;
 from tkinter import messagebox;
 from tkinter import ttk;
-import mysql.connector as sq;
+import mysql.connector as sq
 import csv 
 
 root = Tk();
@@ -135,6 +135,7 @@ def export_data():
     writer = csv.writer(f)
     writer.writerow(["id","name","price"])
     writer.writerows(data)
+    f.close();
     messagebox.showinfo("Information","Export Complete")
 
 gp1 = LabelFrame(root,text="Insert Records",width="400",height="200")
