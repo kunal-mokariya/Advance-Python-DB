@@ -57,10 +57,9 @@ def save_data():
     encode = txt3.get()
     get_data = txt.get("1.0", END).strip().split("\n")
 
-    with open(file_path, "w", encoding=encode, newline="") as f:
-        writer = csv.writer(f, delimiter=delimiter)
-        for line in get_data:
-            writer.writerow(line.split(delimiter))
+    df = pandas.DataFrame(get_data);
+    df = df[0].str.split(",",expand=True);
+    df.to_csv(file_path,index=False,header=False)
 btn3 = Button(root,text="save file",command=save_data);
 btn3.place(x=30,y=180)
 
